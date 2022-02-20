@@ -1,0 +1,72 @@
+---
+title: "HW4"
+author: "Matt Schwab"
+date: "2/19/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+chocolate.data = read.csv('choco.csv')
+head(chocolate.data)
+chocolate.data
+
+library(tidyverse)
+str(chocolate.data)
+
+```
+There are 1852 ratings of chocolate bars.
+
+```{r}
+chocolate.data %>% ggplot(aes(x = as.factor(Review.Date))) + geom_bar() +
+xlab("Review Year") + ylab("Count") + ggtitle("Number of Reviews by Year")
+data.2015 = filter(chocolate.data, Review.Date == 2015)
+str(data.2015)
+```
+The majority of reviews occurred between the years 2011 and 2016. The most number of reviews happened in 2015, when 285 bars were rated.
+
+```{r}
+ggplot(chocolate.data, aes(x = Rating)) + geom_histogram()
+ggplot(chocolate.data, aes(x = Rating)) + geom_boxplot()
+median(chocolate.data$Rating)
+IQR(chocolate.data$Rating)
+```
+The median rating is 3.25, with most of the ratings centered between 2 and 4. Ratings below 2.25 and greater than 4 are considered outliers.
+
+
+```{r}
+ggplot(chocolate.data, aes(x = Cocoa.Pct, y = Rating)) + geom_point() + geom_jitter()
+
+```
+
+There does not seem to be a relationship between the percentage of cocoa and the bar's rating. 
+
+```{r}
+diff.countries = filter(chocolate.data, Company.Location %in% c("U.S.A.", "France", "Canada"))
+ggplot(diff.countries, aes(x = Rating)) + geom_histogram() + facet_wrap(~Company.Location, scale = "free")
+us = filter(diff.countries, Company.Location == "U.S.A.")
+mean(us$Rating)
+median(us$Rating)
+can = filter(diff.countries, Company.Location == "Canada")
+mean(can$Rating)
+median(can$Rating)
+fran = filter(diff.countries, Company.Location == "France")
+mean(fran$Rating)
+median(fran$Rating)
+```
+Ratings do not seem to depend on country location. The distribution of ratings between Canada, France, and the U.S.A. are all very similar. The mean rating in every country is 3.25. The mean ratings are very close. From the summary statistics and the distributions of the ratings in each country, there is little evidence to support that ratings depend on country location.
+
+```{r}
+ggplot(diff.countries, aes(x = Cocoa.Pct)) + geom_histogram() + facet_wrap(~Company.Location, scale = "free")
+mean(us$Cocoa.Pct)
+median(us$Cocoa.Pct)
+mean(fran$Cocoa.Pct)
+median(fran$Cocoa.Pct)
+mean(can$Cocoa.Pct)
+median(can$Cocoa.Pct)
+```
+
+I wanted to figure out if different countries specialize in producing a certain type of chocolate bars. I wanted to know if each country prefers a different cocoa concentration. I observed the cocoa percentages for Canada, France, and the United States. It seems that each country has relatively similar tastes in production. Canada and the USA produce mostly 70% chocolate, while France produces mostly 75% chocolate. France has the highest median cocoa percentage(73%) but Canada has the highest mean(72.4%) Overall, the distributions by country are relatively similar. 
